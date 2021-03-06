@@ -5,7 +5,6 @@ import com.intercorp.exercise.clients.exceptions.ClientException;
 import com.intercorp.exercise.clients.models.Client;
 import com.intercorp.exercise.clients.repositories.ClientRepository;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import org.springframework.stereotype.Service;
 
 import static java.util.Objects.isNull;
@@ -31,9 +30,6 @@ public class ClientServiceImpl implements ClientService {
         client.setFirstName(request.getFirstName());
         client.setLastName(request.getLastName());
 
-        val savedClient = clientRepository.save(client);
-        log.info("New client created:", client);
-
-        return savedClient;
+        return clientRepository.save(client);
     }
 }

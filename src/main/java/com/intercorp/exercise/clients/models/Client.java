@@ -2,12 +2,12 @@ package com.intercorp.exercise.clients.models;
 
 import com.intercorp.exercise.clients.exceptions.ClientException;
 import lombok.Data;
-import lombok.Generated;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.LocalDate;
@@ -22,10 +22,8 @@ import static java.util.Objects.isNull;
 @Table(name = "clients")
 public class Client {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
-
-
     private String firstName;
     private String lastName;
     private Date birthdate;
