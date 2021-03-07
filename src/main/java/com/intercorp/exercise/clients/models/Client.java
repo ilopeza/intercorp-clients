@@ -27,6 +27,7 @@ public class Client {
     private String firstName;
     private String lastName;
     private Date birthdate;
+    private Date deathDate;
 
     public int calculateAge() {
         if (isNull(birthdate)) {
