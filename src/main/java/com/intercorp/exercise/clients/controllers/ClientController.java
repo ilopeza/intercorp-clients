@@ -5,12 +5,18 @@ import com.intercorp.exercise.clients.dto.CreateClientRequest;
 import com.intercorp.exercise.clients.services.ClientService;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static java.util.Collections.emptyList;
+import static org.springframework.util.CollectionUtils.isEmpty;
 
 @Slf4j
 @RestController
@@ -34,5 +40,22 @@ public class ClientController {
                 .firstName(client.getFirstName())
                 .lastName(client.getLastName())
                 .build();
+    }
+
+    @GetMapping("/find-all")
+    public List<ClientResponse> findAllClients() {
+        val clients = clientService.findAllClients();
+        if (isEmpty(clients)) {
+            return emptyList();
+        }
+        return clients.stream()
+                .map(client -> ClientResponse.builder()
+                        .firstName(client.getFirstName())
+                        .lastName(client.getLastName())
+                        .age(client.calculateAge())
+                        .birthDate(client.getBirthdate())
+                        .deathDate(client.getDeathDate())
+                        .build())
+                .collect(Collectors.toList());
     }
 }
