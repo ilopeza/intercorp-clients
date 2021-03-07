@@ -4,6 +4,7 @@ import com.intercorp.exercise.clients.dto.ClientResponse;
 import com.intercorp.exercise.clients.dto.CreateClientRequest;
 import com.intercorp.exercise.clients.dto.KpiClient;
 import com.intercorp.exercise.clients.services.ClientService;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +31,7 @@ public class ClientController {
         this.clientService = clientService;
     }
 
+    @ApiOperation(value = "Create a new client", response = ClientResponse.class)
     @PostMapping("/create")
     public ClientResponse createClient(@Valid @RequestBody CreateClientRequest request) {
         log.info("Calling /create with params: {}", request);
@@ -43,6 +45,7 @@ public class ClientController {
                 .build();
     }
 
+    @ApiOperation(value = "Find all clients", response = ClientResponse.class)
     @GetMapping("/find-all")
     public List<ClientResponse> findAllClients() {
         log.info("Calling endpoint /find-all");
@@ -62,6 +65,7 @@ public class ClientController {
                 .collect(Collectors.toList());
     }
 
+    @ApiOperation(value = "Find all clients", response = KpiClient.class)
     @GetMapping("/kpideclientes")
     public KpiClient getKpiClient() {
         log.info("Calling endpoint /kpideclientes");
