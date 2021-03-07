@@ -1,6 +1,7 @@
 package com.intercorp.exercise.clients.services;
 
 import com.intercorp.exercise.clients.dto.CreateClientRequest;
+import com.intercorp.exercise.clients.dto.KpiClient;
 import com.intercorp.exercise.clients.models.Client;
 
 import java.util.List;
@@ -24,4 +25,11 @@ public interface ClientService {
      * @return List of all the clients
      */
     List<Client> findAllClients();
+
+    /**
+     * Calculate average and standard deviation for all clients in database.
+     *
+     * @return KPI with average and standard deviation
+     */
+    KpiClient getKpiForClients();
 }

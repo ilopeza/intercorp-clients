@@ -1,6 +1,7 @@
 package com.intercorp.exercise.clients.services;
 
 import com.intercorp.exercise.clients.dto.CreateClientRequest;
+import com.intercorp.exercise.clients.dto.KpiClient;
 import com.intercorp.exercise.clients.exceptions.ClientException;
 import com.intercorp.exercise.clients.models.Client;
 import com.intercorp.exercise.clients.repositories.ClientRepository;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static java.util.Objects.isNull;
+import static org.springframework.util.CollectionUtils.isEmpty;
 
 @Slf4j
 @Service
@@ -45,5 +47,33 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public List<Client> findAllClients() {
         return clientRepository.findAll();
+    }
+
+    @Override
+    public KpiClient getKpiForClients() {
+        val clients = clientRepository.findAll();
+        KpiClient kpi = new KpiClient();
+        if (isEmpty(clients)) {
+            return kpi;
+        }
+        val doubleSummaryStatistics = clients.stream()
+                .mapToDouble(Client::calculateAge)
+                .summaryStatistics();
+        val avg = doubleSummaryStatistics.getAverage();
+
+        double sd = getStandardDeviation(clients, doubleSummaryStatistics, avg);
+        kpi.setAvg(avg);
+        kpi.setStandardDeviation(sd);
+        return kpi;
+    }
+
+    private double getStandardDeviation(List<Client> clients, java.util.DoubleSummaryStatistics doubleSummaryStatistics, double avg) {
+        val sum = clients.stream()
+                .mapToDouble(Client::calculateAge)
+                .map(age -> age - avg)
+                .map(operand -> Math.pow(operand, 2))
+                .sum();
+
+        return Math.pow(sum / doubleSummaryStatistics.getCount(), 0.5);
     }
 }

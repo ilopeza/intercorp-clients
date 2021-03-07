@@ -2,6 +2,7 @@ package com.intercorp.exercise.clients.controllers;
 
 import com.intercorp.exercise.clients.dto.ClientResponse;
 import com.intercorp.exercise.clients.dto.CreateClientRequest;
+import com.intercorp.exercise.clients.dto.KpiClient;
 import com.intercorp.exercise.clients.services.ClientService;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -44,10 +45,12 @@ public class ClientController {
 
     @GetMapping("/find-all")
     public List<ClientResponse> findAllClients() {
+        log.info("Calling endpoint /find-all");
         val clients = clientService.findAllClients();
         if (isEmpty(clients)) {
             return emptyList();
         }
+        log.info("Returning {} clients", clients.size());
         return clients.stream()
                 .map(client -> ClientResponse.builder()
                         .firstName(client.getFirstName())
@@ -57,5 +60,13 @@ public class ClientController {
                         .deathDate(client.getDeathDate())
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    @GetMapping("/kpideclientes")
+    public KpiClient getKpiClient() {
+        log.info("Calling endpoint /kpideclientes");
+        val kpiForClients = clientService.getKpiForClients();
+        log.info("Returning kpi for clients: {}", kpiForClients);
+        return kpiForClients;
     }
 }
