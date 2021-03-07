@@ -20,4 +20,6 @@ public class ClientResponse {
     private Date birthDate;
     @JsonProperty("age")
     private int age;
+    @JsonProperty("death_date")
+    private Date deathDate;
 }
