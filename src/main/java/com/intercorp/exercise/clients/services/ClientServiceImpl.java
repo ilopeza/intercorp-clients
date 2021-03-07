@@ -35,9 +35,10 @@ public class ClientServiceImpl implements ClientService {
         client.setBirthdate(request.getBirthDate());
         client.setFirstName(request.getFirstName());
         client.setLastName(request.getLastName());
+        //calculate the death date and save it
         val expectedDeath = expectedLifeCalculator.calculateExpectedDeathDate(client);
         client.setDeathDate(expectedDeath);
-
+        log.info("Saving client with data: {}", client);
         return clientRepository.save(client);
     }
 

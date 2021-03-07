@@ -14,6 +14,7 @@ import java.util.Random;
 public class SimpleExpectedLifeCalculator implements ExpectedLifeCalculator {
 
     Random random = new Random();
+
     @Override
     public Date calculateExpectedDeathDate(Client client) {
         //get min and max
