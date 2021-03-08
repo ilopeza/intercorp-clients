@@ -4,6 +4,7 @@ import com.intercorp.exercise.clients.dto.ClientResponse;
 import com.intercorp.exercise.clients.dto.CreateClientRequest;
 import com.intercorp.exercise.clients.dto.KpiClient;
 import com.intercorp.exercise.clients.services.ClientService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -23,6 +24,7 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 @Slf4j
 @RestController
 @RequestMapping("/api/clients")
+@Api(tags = "Clients")
 public class ClientController {
 
     private final ClientService clientService;

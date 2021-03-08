@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static java.util.Objects.isNull;
@@ -31,6 +32,9 @@ public class ClientServiceImpl implements ClientService {
     public Client createClient(CreateClientRequest request) {
         if (isNull(request)) {
             throw new ClientException("Cannot create Client from empty request");
+        }
+        if (request.getBirthDate().isAfter(LocalDate.now())) {
+            throw new ClientException("Birthdate cannot be greater that today");
         }
         log.info("About to save new client with params: {}", request);
         Client client = new Client();
@@ -56,24 +60,25 @@ public class ClientServiceImpl implements ClientService {
         if (isEmpty(clients)) {
             return kpi;
         }
-        val doubleSummaryStatistics = clients.stream()
+        val sum = clients.stream()
                 .mapToDouble(Client::calculateAge)
-                .summaryStatistics();
-        val avg = doubleSummaryStatistics.getAverage();
+                .sum();
+        val count = clients.size();
+        val avg = sum / count;
 
-        double sd = getStandardDeviation(clients, doubleSummaryStatistics, avg);
-        kpi.setAvg(avg);
+        double sd = getStandardDeviation(clients, count, avg);
+        kpi.setAgeAvg(avg);
         kpi.setStandardDeviation(sd);
         return kpi;
     }
 
-    private double getStandardDeviation(List<Client> clients, java.util.DoubleSummaryStatistics doubleSummaryStatistics, double avg) {
+    private double getStandardDeviation(List<Client> clients, int count, double avg) {
         val sum = clients.stream()
                 .mapToDouble(Client::calculateAge)
                 .map(age -> age - avg)
                 .map(operand -> Math.pow(operand, 2))
                 .sum();
 
-        return Math.pow(sum / doubleSummaryStatistics.getCount(), 0.5);
+        return Math.pow(sum / count, 0.5);
     }
 }
