@@ -2,7 +2,7 @@ package com.intercorp.exercise.clients.services;
 
 import com.intercorp.exercise.clients.models.Client;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 /**
  * Service to calculate the date of death of a client.
@@ -15,5 +15,5 @@ public interface ExpectedLifeCalculator {
      * @param client Client to calculate the death date
      * @return death of the client
      */
-    Date calculateExpectedDeathDate(Client client);
+    LocalDate calculateExpectedDeathDate(Client client);
 }

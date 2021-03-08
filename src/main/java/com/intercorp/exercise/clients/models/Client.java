@@ -11,8 +11,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Date;
 
 import static java.util.Objects.isNull;
 
@@ -26,20 +24,20 @@ public class Client {
     private Long id;
     private String firstName;
     private String lastName;
-    private Date birthdate;
-    private Date deathDate;
+    private LocalDate birthdate;
+    private LocalDate deathDate;
 
     public int calculateAge() {
         if (isNull(birthdate)) {
-            log.error("Birthdate is null for client {}", this.id);
+            log.error("Birthdate is null for client {}", id);
             throw new ClientException("Birthdate should not be null");
         }
 
-        if (birthdate.after(new Date())) {
+        if (birthdate.isAfter(LocalDate.now())) {
             log.error("Birthdate {} of client {} should not be greater that today", birthdate, id);
             throw new ClientException("Birthdate cannot be greater that today");
         }
-        val birthYear = birthdate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().getYear();
+        val birthYear = birthdate.getYear();
         val currentYear = LocalDate.now().getYear();
         return currentYear - birthYear;
     }

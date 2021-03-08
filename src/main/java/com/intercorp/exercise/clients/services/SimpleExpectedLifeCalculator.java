@@ -1,27 +1,37 @@
 package com.intercorp.exercise.clients.services;
 
+import com.intercorp.exercise.clients.exceptions.ExpectedLifeCalcException;
 import com.intercorp.exercise.clients.models.Client;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
 import java.util.Random;
 
+import static java.util.Objects.isNull;
+
+@Slf4j
 @Service
 public class SimpleExpectedLifeCalculator implements ExpectedLifeCalculator {
 
     Random random = new Random();
 
     @Override
-    public Date calculateExpectedDeathDate(Client client) {
+    public LocalDate calculateExpectedDeathDate(Client client) {
+        if (isNull(client)) {
+            log.error("Cannot predict death date for a null client");
+            throw new ExpectedLifeCalcException("Cannot predict death date for a null client");
+        }
+
+        if (isNull(client.getBirthdate())) {
+            log.error("Cannot predict death date for a client {} with null birthdate", client.getId());
+            throw new ExpectedLifeCalcException("Cannot get expected death date for a client with null birthdate");
+        }
+
         //get min and max
-        val localBirthDate = client.getBirthdate()
-                .toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate();
+        val localBirthDate = client.getBirthdate();
         val maxYearsToLive = localBirthDate.plusYears(77);
         val maxDaysToLive = localBirthDate.until(maxYearsToLive, ChronoUnit.DAYS);
 
@@ -31,8 +41,6 @@ public class SimpleExpectedLifeCalculator implements ExpectedLifeCalculator {
                 .findFirst()
                 .getAsLong();
 
-        val expectedDeathDate = localBirthDate.plusDays(daysToLive);
-
-        return Date.from(expectedDeathDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        return localBirthDate.plusDays(daysToLive);
     }
 }
